@@ -60,13 +60,7 @@ builder.Services.AddOpenTelemetry()
         .AddOtlpExporter())
     .WithMetrics(meterBuilder => meterBuilder
         .AddRuntimeInstrumentation()
-        .AddAspNetCoreInstrumentation(x =>{
-            x.Enrich = (string name, HttpContext context, ref TagList tags) 
-                 => {
-                        tags.Add("system_under_test", "OtelDemo");
-                        tags.Add("test_environment", "opentelemetry-demo");
-                    }
-        })
+        .AddAspNetCoreInstrumentation()
         .AddOtlpExporter());
 
 builder.Services.AddGrpc();
