@@ -28,8 +28,7 @@ jobs:
 
     env:
       RELEASE_VERSION: "${{ github.event.release.tag_name }}"
-      DOCKERHUB_REPO: "otel/demo"
-      GHCR_REPO: "ghcr.io/open-telemetry/demo"
+      DOCKERHUB_REPO: "perfana/opentelemetry-demo"
 
     strategy:
       fail-fast: false
@@ -118,13 +117,6 @@ jobs:
         if: ${{ inputs.push }}
         run: echo "skip=false" >> "$GITHUB_OUTPUT"
         id: override_skip
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ inputs.push }}
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -151,6 +143,5 @@ jobs:
           push: ${{ inputs.push }}
           tags: |
             ${{ env.DOCKERHUB_REPO }}:${{ inputs.version }}-${{matrix.file_tag.tag_suffix }}
-            ${{ env.GHCR_REPO }}:${{ inputs.version }}-${{ matrix.file_tag.tag_suffix }}
           cache-from: type=gha
           cache-to: type=gha
