@@ -2,10 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 on:
-  push:
-    paths:
-      - 'src/**'
-      - 'test/**'
+  
   workflow_dispatch:
     inputs:
       push:
