@@ -54,16 +54,17 @@ builder.Services.AddOpenTelemetry()
     .WithTracing(tracerBuilder => tracerBuilder
         .AddRedisInstrumentation(
             options => options.SetVerboseDatabaseStatements = true)
-        .AddAspNetCoreInstrumentation()
+        .AddAspNetCoreInstrumentation(x =>{
+            x.Enrich = (string name, HttpContext context, ref TagList tags) 
+                 => tags.Add("system_under_test", "OtelDemo");
+        })
+    
         .AddGrpcClientInstrumentation()
         .AddHttpClientInstrumentation()
         .AddOtlpExporter())
     .WithMetrics(meterBuilder => meterBuilder
         .AddRuntimeInstrumentation()
-        .AddAspNetCoreInstrumentation(x =>{
-            x.Enrich = (string name, HttpContext context, ref TagList tags) 
-                 => tags.Add("system_under_test", "OtelDemo");
-        })
+        .AddAspNetCoreInstrumentation()
         .AddOtlpExporter());
 
 builder.Services.AddGrpc();
