@@ -60,11 +60,14 @@ builder.Services.AddOpenTelemetry()
         .AddOtlpExporter())
     .WithMetrics(meterBuilder => meterBuilder
         .AddRuntimeInstrumentation()
-        .AddAspNetCoreInstrumentation(x => {
-            x.Enrich = (string name, HttpContext context, ref TagList tags) => {
-                tags.Add("system_under_test", "OtelDemo");
-                tags.Add("test_environment", "opentelemetry-demo");
-            }
+        .AddAspNetCoreInstrumentation(o =>
+        {
+            o.EnrichWithHttpRequest = (activity, httpRequest) =>
+            {
+                activity.SetTag("system_under_test", "OtelDemo");
+                activity.SetTag("test_environment", "opentelemetry-demo");
+            };
+            
         }
             
         )
