@@ -16,8 +16,14 @@ const InstrumentationMiddleware = (handler: NextApiHandler): NextApiHandler => {
     const [target] = url.split('?');
 
     let span;
+    let perfanaRequestName;
+    let perfanaTestRunId;
+
     const baggage = propagation.getBaggage(context.active());
-    if (baggage?.getEntry('synthetic_request')?.value == 'true') {
+    if (baggage?.getEntry('perfana-request-name')?.value !== undefined ) {
+        perfanaRequestName = baggage.getEntry('perfana-request-name')?.value;
+        perfanaTestRunId = baggage.getEntry('perfana-test-run-id')?.value;
+
       // if synthetic_request baggage is set, create a new trace linked to the span in context
       // this span will look similar to the auto-instrumented HTTP span
       const syntheticSpan = trace.getSpan(context.active()) as Span;
@@ -27,7 +33,8 @@ const InstrumentationMiddleware = (handler: NextApiHandler): NextApiHandler => {
         kind: SpanKind.SERVER,
         links: [{ context: syntheticSpan.spanContext() }],
         attributes: {
-          'app.synthetic_request': true,
+          'perfana-request-name': perfanaRequestName,
+          'perfana-test-run-id': perfanaTestRunId,
           [SemanticAttributes.HTTP_TARGET]: target,
           [SemanticAttributes.HTTP_METHOD]: method,
           [SemanticAttributes.HTTP_USER_AGENT]: headers['user-agent'] || '',
@@ -56,7 +63,7 @@ const InstrumentationMiddleware = (handler: NextApiHandler): NextApiHandler => {
     } finally {
       requestCounter.add(1, { method, target, status: httpStatus });
       span.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, httpStatus);
-      if (baggage?.getEntry('synthetic_request')?.value == 'true') {
+      if (baggage?.getEntry('perfana-request-name')?.value !== undefined ) {
         span.end();
       }
     }
