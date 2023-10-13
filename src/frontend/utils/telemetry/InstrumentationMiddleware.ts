@@ -20,7 +20,7 @@ const InstrumentationMiddleware = (handler: NextApiHandler): NextApiHandler => {
     let perfanaTestRunId;
 
     const baggage = propagation.getBaggage(context.active());
-    if (baggage?.getEntry('perfana-request-name')?.value !== undefined ) {
+    if (baggage?.getEntry('perfana-request-name')?.value === undefined ) {
       perfanaRequestName = baggage.getEntry('perfana-request-name')?.value;
       perfanaTestRunId = baggage.getEntry('perfana-test-run-id')?.value;
 
