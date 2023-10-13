@@ -2,10 +2,20 @@
 # SPDX-License-Identifier: Apache-2.0
 
 on:
-  push:
-    paths:
-      - 'src/**'
-      - 'test/**'
+  
+  workflow_dispatch:
+    inputs:
+      push:
+        description: Should the images be pushed
+        default: false
+        required: false
+        type: boolean
+      version:
+        description: The version used when tagging the image
+        default: dev
+        required: false
+        type: string
+
   workflow_call:
     inputs:
       push:
@@ -28,8 +38,7 @@ jobs:
 
     env:
       RELEASE_VERSION: "${{ github.event.release.tag_name }}"
-      DOCKERHUB_REPO: "otel/demo"
-      GHCR_REPO: "ghcr.io/open-telemetry/demo"
+      DOCKERHUB_REPO: "perfana/opentelemetry-demo"
 
     strategy:
       fail-fast: false
@@ -118,13 +127,6 @@ jobs:
         if: ${{ inputs.push }}
         run: echo "skip=false" >> "$GITHUB_OUTPUT"
         id: override_skip
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ inputs.push }}
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -147,10 +149,9 @@ jobs:
         with:
           context: ${{ matrix.file_tag.context }}
           file: ${{ matrix.file_tag.file }}
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: ${{ inputs.push }}
           tags: |
             ${{ env.DOCKERHUB_REPO }}:${{ inputs.version }}-${{matrix.file_tag.tag_suffix }}
-            ${{ env.GHCR_REPO }}:${{ inputs.version }}-${{ matrix.file_tag.tag_suffix }}
           cache-from: type=gha
           cache-to: type=gha
