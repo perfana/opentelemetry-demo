@@ -20,13 +20,13 @@ const InstrumentationMiddleware = (handler: NextApiHandler): NextApiHandler => {
     let perfanaTestRunId;
 
     const baggage = propagation.getBaggage(context.active());
-    if (baggage?.getEntry('perfana-request-name')?.value !== undefined ) {
+    // if (baggage?.getEntry('perfana-request-name')?.value !== undefined ) {
+    if (false ) {
         perfanaRequestName = baggage.getEntry('perfana-request-name')?.value;
         perfanaTestRunId = baggage.getEntry('perfana-test-run-id')?.value;
 
       // if synthetic_request baggage is set, create a new trace linked to the span in context
       // this span will look similar to the auto-instrumented HTTP span
-      const syntheticSpan = trace.getSpan(context.active()) as Span;
       const tracer = trace.getTracer(process.env.OTEL_SERVICE_NAME as string);
       span = tracer.startSpan(`HTTP ${method}`, {
         root: true,
