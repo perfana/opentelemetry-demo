@@ -35,17 +35,42 @@ public class CartService : Oteldemo.CartService.CartServiceBase
         return Empty;
     }
 
+//    public override async Task<Cart> GetCart(GetCartRequest request, ServerCallContext context)
+//    {
+//        var activity = Activity.Current;
+//        activity?.SetTag("app.user.id", request.UserId);
+//        activity?.AddEvent(new("Fetch cart"));
+//
+//        var cart = await _cartStore.GetCartAsync(request.UserId);
+//        var totalCart = 0;
+//        foreach (var item in cart.Items)
+//        {
+//            totalCart += item.Quantity;
+//        }
+//        activity?.SetTag("app.cart.items.count", totalCart);
+//
+//        return cart;
+//    }
+
     public override async Task<Cart> GetCart(GetCartRequest request, ServerCallContext context)
     {
         var activity = Activity.Current;
         activity?.SetTag("app.user.id", request.UserId);
         activity?.AddEvent(new("Fetch cart"));
 
-        var cart = await _cartStore.GetCartAsync(request.UserId);
-        var totalCart = 0;
-        foreach (var item in cart.Items)
+        var totalCart = 10000;
+        var cart = new Cart
         {
-            totalCart += item.Quantity;
+            UserId = request.UserId
+        };
+        for (int i = 0; i < totalCart; i++)
+        {
+            var item = new CartItem
+            {
+                ProductId = Guid.NewGuid().ToString(),
+                Quantity = (int)Random.Shared.NextInt64(1, 50)
+            };
+            cart.Items.Add(item);
         }
         activity?.SetTag("app.cart.items.count", totalCart);
 
