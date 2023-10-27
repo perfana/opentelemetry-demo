@@ -1,7 +1,6 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
-using System.Diagnostics;
-using System.Threading.Tasks;
+using System;
 using Grpc.Core;
 using OpenTelemetry.Trace;
 using cartservice.cartstore;
@@ -58,7 +57,7 @@ public class CartService : Oteldemo.CartService.CartServiceBase
         activity?.SetTag("app.user.id", request.UserId);
         activity?.AddEvent(new("Fetch cart"));
 
-        var totalCart = 10000;
+        var totalCart = 100000;
         var cart = new Cart
         {
             UserId = request.UserId
