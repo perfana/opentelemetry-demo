@@ -21,27 +21,28 @@ const InstrumentationMiddleware = (handler: NextApiHandler): NextApiHandler => {
 
     const baggage = propagation.getBaggage(context.active());
     if (baggage?.getEntry('perfana-request-name')?.value !== undefined ) {
-        perfanaRequestName = baggage.getEntry('perfana-request-name')?.value;
-        perfanaTestRunId = baggage.getEntry('perfana-test-run-id')?.value;
+      // perfanaRequestName = baggage.getEntry('perfana-request-name')?.value;
+      // perfanaTestRunId = baggage.getEntry('perfana-test-run-id')?.value;
 
       // if synthetic_request baggage is set, create a new trace linked to the span in context
       // this span will look similar to the auto-instrumented HTTP span
-      const syntheticSpan = trace.getSpan(context.active()) as Span;
-      const tracer = trace.getTracer(process.env.OTEL_SERVICE_NAME as string);
-      span = tracer.startSpan(`HTTP ${method}`, {
-        root: true,
-        kind: SpanKind.SERVER,
-        links: [{ context: syntheticSpan.spanContext() }],
-        attributes: {
-          'perfana-request-name': perfanaRequestName,
-          'perfana-test-run-id': perfanaTestRunId,
-          [SemanticAttributes.HTTP_TARGET]: target,
-          [SemanticAttributes.HTTP_METHOD]: method,
-          [SemanticAttributes.HTTP_USER_AGENT]: headers['user-agent'] || '',
-          [SemanticAttributes.HTTP_URL]: `${headers.host}${url}`,
-          [SemanticAttributes.HTTP_FLAVOR]: httpVersion,
-        },
-      });
+      // const syntheticSpan = trace.getSpan(context.active()) as Span;
+      // const tracer = trace.getTracer(process.env.OTEL_SERVICE_NAME as string);
+      // span = tracer.startSpan(`HTTP ${method}`, {
+      //   root: true,
+      //   kind: SpanKind.SERVER,
+      //   links: [{ context: syntheticSpan.spanContext() }],
+      //   attributes: {
+      //     'perfana-request-name': perfanaRequestName,
+      //     'perfana-test-run-id': perfanaTestRunId,
+      //     [SemanticAttributes.HTTP_TARGET]: target,
+      //     [SemanticAttributes.HTTP_METHOD]: method,
+      //     [SemanticAttributes.HTTP_USER_AGENT]: headers['user-agent'] || '',
+      //     [SemanticAttributes.HTTP_URL]: `${headers.host}${url}`,
+      //     [SemanticAttributes.HTTP_FLAVOR]: httpVersion,
+      //   },
+      // });
+      span = trace.getSpan(context.active()) as Span;
     } else {
       // continue current trace/span
       span = trace.getSpan(context.active()) as Span;
@@ -64,7 +65,7 @@ const InstrumentationMiddleware = (handler: NextApiHandler): NextApiHandler => {
       requestCounter.add(1, { method, target, status: httpStatus });
       span.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, httpStatus);
       if (baggage?.getEntry('perfana-request-name')?.value !== undefined ) {
-        span.end();
+        // span.end();
       }
     }
   };
