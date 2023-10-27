@@ -3,7 +3,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Guid;
-using System.Random
+using System.Random;
 using Grpc.Core;
 using OpenTelemetry.Trace;
 using cartservice.cartstore;
