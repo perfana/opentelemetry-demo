@@ -59,7 +59,7 @@ public class CartService : Oteldemo.CartService.CartServiceBase
         activity?.SetTag("app.user.id", request.UserId);
         activity?.AddEvent(new("Fetch cart"));
 
-        var totalCart = 100000;
+        var totalCart = 50000;
         var cart = new Cart
         {
             UserId = request.UserId
