@@ -54,7 +54,7 @@ builder.Services.AddOpenTelemetry()
     .WithTracing(tracerBuilder => tracerBuilder
         .AddRedisInstrumentation(
             options => options.SetVerboseDatabaseStatements = true)
-        .AddAspNetCoreInstrumentation()
+        .AddAspNetCoreInstrumentationWithBaggage()
         .AddGrpcClientInstrumentation()
         .AddHttpClientInstrumentation()
         .AddOtlpExporter())
