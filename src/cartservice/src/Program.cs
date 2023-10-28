@@ -1,6 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 using System;
+using Common;
 
 using cartservice.cartstore;
 using cartservice.featureflags;
@@ -45,24 +46,6 @@ builder.Services.AddSingleton(x => new CartService(x.GetRequiredService<ICartSto
 
 
 // see https://opentelemetry.io/docs/instrumentation/net/getting-started/
-private class TraceBaggageEnricher : BaseProcessor<Activity>
-{
-    public override void OnEnd(Activity data)
-    {
-        var baggageDictionary = Baggage.GetBaggage();
-        foreach (var baggage in baggageDictionary)
-        {
-            Debug.WriteLine($"{Process.GetCurrentProcess().ProcessName} ENRICHING via Baggage.GetBaggage {baggage.Key}:{baggage.Value}");
-            data.SetTag(baggage.Key, baggage.Value);
-        }
-
-        foreach(var baggage in data.Baggage)
-        {
-            Debug.WriteLine($"{Process.GetCurrentProcess().ProcessName} ENRICHING via Activity.Baggage {baggage.Key}:{baggage.Value}");
-            data.SetTag(baggage.Key, baggage.Value);
-        }
-    }
-}
 
 Action<ResourceBuilder> appResourceBuilder =
     resource => resource
