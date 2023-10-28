@@ -18,6 +18,24 @@ using OpenTelemetry.ResourceDetectors.Container;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
+private class TraceBaggageEnricher : BaseProcessor<Activity>
+{
+    public override void OnEnd(Activity data)
+    {
+        var baggageDictionary = Baggage.GetBaggage();
+        foreach (var baggage in baggageDictionary)
+        {
+            Debug.WriteLine($"{Process.GetCurrentProcess().ProcessName} ENRICHING via Baggage.GetBaggage {baggage.Key}:{baggage.Value}");
+            data.SetTag(baggage.Key, baggage.Value);
+        }
+
+        foreach(var baggage in data.Baggage)
+        {
+            Debug.WriteLine($"{Process.GetCurrentProcess().ProcessName} ENRICHING via Activity.Baggage {baggage.Key}:{baggage.Value}");
+            data.SetTag(baggage.Key, baggage.Value);
+        }
+    }
+}
 var builder = WebApplication.CreateBuilder(args);
 string redisAddress = builder.Configuration["REDIS_ADDR"];
 if (string.IsNullOrEmpty(redisAddress))
@@ -54,7 +72,8 @@ builder.Services.AddOpenTelemetry()
     .WithTracing(tracerBuilder => tracerBuilder
         .AddRedisInstrumentation(
             options => options.SetVerboseDatabaseStatements = true)
-        .AddAspNetCoreInstrumentationWithBaggage()
+        .AddAspNetCoreInstrumentation()
+        .AddProcessor(new TraceBaggageEnricher())
         .AddGrpcClientInstrumentation()
         .AddHttpClientInstrumentation()
         .AddOtlpExporter())
