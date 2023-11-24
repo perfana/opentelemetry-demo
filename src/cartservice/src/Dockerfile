@@ -54,7 +54,7 @@ ENV CORECLR_PROFILER_PATH=/usr/src/app/Pyroscope.Profiler.Native.so
 ENV LD_PRELOAD=/usr/src/app/Pyroscope.Linux.ApiWrapper.x64.so
 
 ENV PYROSCOPE_APPLICATION_NAME=cartservice
-ENV PYROSCOPE_SERVER_ADDRESS=https://pyroscope-ingest.demo.perfana.cloud
+ENV PYROSCOPE_SERVER_ADDRESS=https://grafana-pyroscope-ingest.demo.perfana.cloud
 ENV PYROSCOPE_LOG_LEVEL=debug
 ENV PYROSCOPE_PROFILING_ENABLED=1
 ENV PYROSCOPE_PROFILING_ALLOCATION_ENABLED=true
