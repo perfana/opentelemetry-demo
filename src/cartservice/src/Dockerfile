@@ -45,6 +45,8 @@ FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.15-alpine3.16
 
 WORKDIR /usr/src/app/
 COPY --from=builder /cartservice/ ./
+COPY --from=pyroscope/pyroscope-dotnet:0.8.14-musl /Pyroscope.Profiler.Native.so ./Pyroscope.Profiler.Native.so
+COPY --from=pyroscope/pyroscope-dotnet:0.8.14-musl /Pyroscope.Linux.ApiWrapper.x64.so ./Pyroscope.Linux.ApiWrapper.x64.so
 
 EXPOSE ${CART_SERVICE_PORT}
 ENTRYPOINT [ "./cartservice" ]
