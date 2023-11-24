@@ -23,7 +23,7 @@ COPY ./src/cartservice/ ./
 COPY ./pb/ ./src/protos/
 COPY --from=pyroscope/pyroscope-dotnet:0.8.14-musl /Pyroscope.Profiler.Native.so ./Pyroscope.Profiler.Native.so
 COPY --from=pyroscope/pyroscope-dotnet:0.8.14-musl /Pyroscope.Linux.ApiWrapper.x64.so ./Pyroscope.Linux.ApiWrapper.x64.so
-RUN dotnet add package Pyroscope
+RUN dotnet add package ./cartservice.csproj Pyroscope
 
 
 
