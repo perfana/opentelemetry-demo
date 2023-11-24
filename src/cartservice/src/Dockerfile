@@ -29,7 +29,11 @@ COPY --from=pyroscope/pyroscope-dotnet:0.8.14-musl /Pyroscope.Linux.ApiWrapper.x
 RUN \
   RUNTIME_IDENTIIFER=linux-musl-x64; \
   if [ "$(uname -m)" = "aarch64" ]; then RUNTIME_IDENTIIFER=linux-musl-arm64; fi; \
-  dotnet restore ./src/cartservice.csproj -v d -r $RUNTIME_IDENTIIFER; \
+  dotnet restore ./src/cartservice.csproj -v d -r $RUNTIME_IDENTIIFER;
+
+RUN \
+  RUNTIME_IDENTIIFER=linux-musl-x64; \
+  if [ "$(uname -m)" = "aarch64" ]; then RUNTIME_IDENTIIFER=linux-musl-arm64; fi; \
   dotnet add package Pyroscope -v d -r $RUNTIME_IDENTIIFER
 
 RUN \
