@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 on:
-  
+
   workflow_dispatch:
     inputs:
       push:
